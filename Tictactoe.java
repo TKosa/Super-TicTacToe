@@ -38,7 +38,7 @@ public class Tictactoe extends JFrame implements ActionListener {
 	//start of declarations
 	final String version= "1.2";
 	int screenWidth=900;
-	int screenHeight=650;
+	int screenHeight=675;
 	int menuHeight=30;
 	int turnCounter=0;
 	int nextBoard=9;
@@ -54,7 +54,7 @@ public class Tictactoe extends JFrame implements ActionListener {
 	Border border=new LineBorder(Color.GREEN,2);
 	Border defaultBorder=new Button().getBorder();
 	
-	boolean xWinGame=false, oWinGame=false;
+	boolean xWinGame=false, oWinGame=false, gameOver=false;
 	
 	boolean alcol,shift=false;
 	Button focusButton;
@@ -191,9 +191,9 @@ public class Tictactoe extends JFrame implements ActionListener {
 		Button source=(Button)e.getSource();
 		
 			// "" means the button is unclickable
-			if(source.getText()==""){return;}
+			if(source.getText()!=" "){return;}
 			
-			if(source.getText()==" ")
+			else
 			//If the board is open for selection
 			{if(nextBoard==9|| nextBoard==whichBoard(source))	
 				{
@@ -210,7 +210,9 @@ public class Tictactoe extends JFrame implements ActionListener {
 				}	
 			}
 		//Check if the board is won	
-		if(boardWon(this)){return;}
+		boardWon(this);
+		if(gameOver){return;}
+		
 		//If the next board to play on is won, set all boards that aren't won to be clickable
 		try
 		{if (boardArray[nextBoard].won==true){nextBoard=9;alcol=true;}
@@ -246,7 +248,7 @@ public Tictactoe()
 	frame.setVisible(true);
 	frame.setSize(screenWidth,screenHeight);
 	frame.setLocation(100, 100);
-	frame.setResizable(true);
+	frame.setResizable(false);
 	frame.setLayout(new BorderLayout());
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	
@@ -370,6 +372,10 @@ public void newGame()
 		}
 	}
 	nextBoard=9;
+	gameOver=false;
+	xWinGame=false;
+	oWinGame=false;
+
 }
 public void save() throws IOException
 {	
@@ -393,8 +399,8 @@ public void save() throws IOException
 			else text+="n";
 			
 		}
-			
 		out.println(text);
+		
 		text="";
 		for (NineBoard board:boardArray)
 		{
@@ -439,17 +445,16 @@ public void load(File file)
 		turnCounter=Integer.parseInt(in.readLine());
 		nextBoard=Integer.parseInt(in.readLine());
 		char[] carray=in.readLine().toCharArray();
-		for(int x=0;x<9;x++){
-			
-			String s=""+ carray[x];
-			if(!s.equals("n"))boardArray[x].won=true;
-			if(s.equals("w")){boardArray[x].X=true;boardArray[x].color(red);}
-			if(s.equals("l")){boardArray[x].O=true;boardArray[x].color(blue);}
-			
-			boardWon(boardArray[x]);
-			
+		int counter=0;
+		for(NineBoard b:boardArray){
+			char c=carray[counter];
+			if(c!='n'){b.won=true;}
+			if(c=='w'){b.X=true;b.O=false;b.color(red);}
+			if(c=='l'){b.O=true;b.X=false;b.color(blue);}
+			if(c=='n'){b.X=false;b.O=false;}
+			boardWon(b);
+			counter++;	
 					}
-		
 		
 		for (int x=0;x<9;x++)
 		{	
@@ -529,7 +534,7 @@ public void allColor()
 	
 }
 //Check if board is won and set colours and text. Return true iff game is won. 
-public boolean boardWon(NineBoard b)
+public void boardWon(NineBoard b)
 {	
 	//checkboard to see if its won
 			boolean[] XArray={b.buttonArray[0].X,b.buttonArray[1].X,b.buttonArray[2].X,b.buttonArray[3].X,b.buttonArray[4].X,b.buttonArray[5].X,b.buttonArray[6].X,b.buttonArray[7].X,b.buttonArray[8].X};
@@ -556,8 +561,10 @@ public boolean boardWon(NineBoard b)
 					//When a board is won check if the game is over
 					boolean[] xArray={nine1.X,nine2.X,nine3.X,nine4.X,nine5.X,nine6.X,nine7.X,nine8.X,nine9.X},
 							  oArray={nine1.O,nine2.O,nine3.O,nine4.O,nine5.O,nine6.O,nine7.O,nine8.O,nine9.O};
-					 xWinGame=checkBoard(xArray);
+					
+					xWinGame=checkBoard(xArray);
 					 oWinGame=checkBoard(oArray);
+					
 					//If the game is over make all buttons unclickable
 					if (xWinGame||oWinGame){
 					for(NineBoard board:boardArray){
@@ -566,11 +573,11 @@ public boolean boardWon(NineBoard b)
 							if (button.getText()==" "){button.setText("");}
 							}
 						}
-					return true;
+					gameOver=true;
 					}	
 					
 				}
-				return false;
+				
 }
 public static void main(String[] args) {new Tictactoe(); }
 
