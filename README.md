@@ -6,6 +6,7 @@ If a player goes in the top right square of a particular board, then the next pl
 The board to play in is highlighted grey
 
 In this example, blue has won the middle-left board, by going in its top right square. Now, red must play in the top right board.
+
 <img src="https://github.com/TKosa/Super-TicTacToe/blob/master/screenshot1.png" width="500" height="500" style="vertical-align:middle">
 
 If a board has been one by a player, it becomes unplayable; no further pieces can be placed in that board.
