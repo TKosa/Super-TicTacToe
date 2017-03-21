@@ -11,6 +11,6 @@ If the board to play in is unplayable, which happens when that board has been wo
 
 The game is over when either player gets three board in a row.
 
-<img src="https://github.com/TKosa/Super-TicTacToe/blob/master/screenshot2.png" width="200" height="200" />
+<img margin ="auto" src="https://github.com/TKosa/Super-TicTacToe/blob/master/screenshot2.png" width="400" height="400" />
 
 !
